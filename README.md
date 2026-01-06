@@ -28,6 +28,7 @@ python run_bridge.py --config config/ports.two-computer.audio.yaml
 - `docs/performance-laws.md`
 - `docs/scenes.md`
 - `docs/osc-address-space.md`
+- `docs/samplebrain-setup.md`
 
 ## TouchDesigner MIDI→OSC (single machine)
 If you’re using TouchDesigner as the controller mapper (PCR-30 → OSC), start here:

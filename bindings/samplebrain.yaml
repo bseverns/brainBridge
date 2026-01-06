@@ -2,6 +2,7 @@
 #
 # OPTIONAL: leave addresses null until you discover Samplebrain's OSC surface.
 # The bridge will still run; Samplebrain just won't receive macro updates until you bind them.
+# Discovery walkthrough + examples: docs/samplebrain-setup.md
 
 macros:
   energy: { address: null, type: "f" }
