@@ -1,6 +1,6 @@
 # Scene Schema (sbrig/scenes.py)
 
-This doc is the **scene contract** used by `sbrig/scenes.py`. It’s a small, readable YAML format that keeps a rig *playable* under pressure: half studio notebook, half teaching guide. 🎛️🧠
+This doc is the **scene contract** used by `sbrig/scenes.py`. It’s a small, readable YAML format that keeps a rig *playable* under pressure: half studio notebook, half teaching guide.
 
 Scene files live in a directory (whatever you pass into `load_scene(scene_dir, name)`), and each file is named `<scene>.yaml`. Example: `scenes/forest-pulse.yaml`.
 
