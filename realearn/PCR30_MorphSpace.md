@@ -42,10 +42,15 @@ For each mapping:
 
 Suggested starting layout:
 
-### Morph axes (continuous)
+### Morph travel (continuous)
 
-- Knob 1 → `/rig/morph/x` (arg 1)
-- Knob 2 → `/rig/morph/y` (arg 1)
+- Knob 1 → `/rig/morph/t` (arg 1)
+- Knob 2 → *(optional)* map to another macro (e.g. `/rig/density`, `/rig/drift`, or `/rig/space`)
+
+`/rig/morph/t` is the current MorphSpace “slider” between scene A and scene B. Think of it as
+one, deliberate musical lever rather than a 2D pad: **0 = fully A, 1 = fully B**. If you want
+to keep two knobs dedicated to MorphSpace, use Knob 2 as a second “performance axis” (like
+energy or chaos) so the morph has attitude, not just position.
 
 ### Macro “energy/chaos” (continuous)
 
