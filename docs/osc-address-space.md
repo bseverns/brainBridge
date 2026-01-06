@@ -6,6 +6,8 @@
 - `/rig/cue/<scene>` (no args)
 - `/rig/cue` (s)  (optional)
 
+See `docs/scenes.md` for the scene schema and morph rules that back `/rig/cue/*`.
+
 ### Macros (0..1 floats)
 - `/rig/energy`
 - `/rig/density`
