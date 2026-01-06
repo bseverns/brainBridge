@@ -65,8 +65,3 @@ If you want a Shift layer:
 - Use a ReaLearn parameter as your SHIFT flag (0/1).
 - Map L3 to set that flag while held.
 - Use conditional activation so Shift-only mappings are active only when the flag is on.
-
-## 6) Morph Space mode
-If you want the PCR-30 to behave more like a **2‑axis morph pad** (plus macro faders), start here:
-
-- `realearn/PCR30_MorphSpace.md`

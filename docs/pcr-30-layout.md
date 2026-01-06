@@ -65,3 +65,11 @@ Workflow:
 3) Hold SHIFT, ride R1 as your crossfader between the worlds
 
 See `docs/realearn-morph-bank.md`.
+
+
+---
+
+## TouchDesigner mapping (single-machine alternative)
+If you prefer TouchDesigner as your MIDI→OSC mapper (instead of ReaLearn), see:
+- `touchdesigner/README.md`
+- `docs/pcr-30-td-fracture-map.md`

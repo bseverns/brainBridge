@@ -8,6 +8,3 @@
    ```
 
 Optional: use OSC Out CHOP to send readiness/health back to the bridge.
-
-Tip: if you want a prebuilt starting point, there’s a tiny TouchDesigner builder script at:
-- `touchdesigner/build_sb_morphspace_comp.py`

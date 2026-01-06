@@ -27,7 +27,7 @@ slew_units_per_sec:
   energy:   2.5
   density:  3.0
   grain:    2.0
-  tightness:2.0
+  tightness: 2.0
   chaos:    1.5
   drift:    1.2
   space:    2.0
@@ -37,3 +37,24 @@ slew_units_per_sec:
   global_trim: 3.0
 
 rate_limit_hz: 120
+morph:
+  curve: smoothstep
+  inertia_units_per_sec: 2.0
+  apply_hz: 45
+  wells_enabled: true
+  well_points: [0.0, 0.5, 1.0]
+  well_radius: 0.12
+  well_strength: 0.35
+  snap_enabled: true
+  snap_points: [0.0, 0.5, 1.0]
+  snap_threshold: 0.05
+  snap_hysteresis: 0.03
+fracture:
+  enabled: true
+  thresholds: [0.25, 0.5, 0.75]
+  decay_sec: 0.18
+  amount: 0.35
+  rate_hz: 18
+  samplebrain_keys: ["grain", "chaos", "tightness", "density"]
+  touchdesigner_addrs: ["/rig/energy", "/rig/vis_trim", "/rig/vis_density_trim"]
+  processing_addrs: ["/rig/mode"]

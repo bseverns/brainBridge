@@ -1,40 +1,16 @@
-# Samplebrain OSC bindings (user-editable)
+# Samplebrain binding map
 #
-# This bridge speaks a stable "house API" (/rig/*) and *optionally* forwards
-# selected controls into Samplebrain.
-#
-# Set `address: null` to disable any mapping. The bridge will run happily with
-# everything unbound — you can still drive TouchDesigner / Processing / Reaper.
-#
-# How to discover addresses:
-# - docs/samplebrain-discovery.md
-#
-# Types:
-# - f : float
-# - i : int
-# - s : string
+# OPTIONAL: leave addresses null until you discover Samplebrain's OSC surface.
+# The bridge will still run; Samplebrain just won't receive macro updates until you bind them.
 
 macros:
-  # Two "Morph Space" macro axes we use everywhere.
-  energy:
-    address: null
-    type: f
-  chaos:
-    address: null
-    type: f
+  energy: { address: null, type: "f" }
+  density: { address: null, type: "f" }
+  grain: { address: null, type: "f" }
+  tightness: { address: null, type: "f" }
+  chaos: { address: null, type: "f" }
+  drift: { address: null, type: "f" }
+  space: { address: null, type: "f" }
+  color: { address: null, type: "f" }
 
-  # Optional additional macro axes (keep or delete as you like)
-  density:
-    address: null
-    type: f
-  drift:
-    address: null
-    type: f
-
-params:
-  # Add any named parameters you want to forward using /rig/param "<name>" <value>
-  # Example:
-  #   novelty:
-  #     address: "/samplebrain/novelty"
-  #     type: f
-  {}
+params: {}

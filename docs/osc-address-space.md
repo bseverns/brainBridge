@@ -1,55 +1,60 @@
 # OSC Address Space (House API)
 
-Your rig speaks one OSC language: `/rig/*`.
-
-ReaLearn's target **OSC: Send message** can send OSC messages with **up to one argument**.  
-So this API supports **address-only triggers** and **single-argument controls**.
-
 ## Inputs (into the bridge)
 
-### Cues (recommended for button mappings)
+### Cues
 - `/rig/cue/<scene>` (no args)
-  - examples: `/rig/cue/embers`, `/rig/cue/steel`
+- `/rig/cue` (s)  (optional)
 
-Also supported:
-- `/rig/cue` (s) : trigger a named scene (e.g. `"embers"`)
-- `/rig/scene/load` (s) : same as cue
+### Macros (0..1 floats)
+- `/rig/energy`
+- `/rig/density`
+- `/rig/grain`
+- `/rig/tightness`
+- `/rig/chaos`
+- `/rig/drift`
+- `/rig/space`
+- `/rig/color`
+- `/rig/vis_trim`
+- `/rig/vis_density_trim`
+- `/rig/global_trim`
 
-### Macros (recommended for knobs/faders)
-- `/rig/energy` (f 0..1)
-- `/rig/density` (f 0..1)
-- `/rig/grain` (f 0..1)
-- `/rig/tightness` (f 0..1)
-- `/rig/chaos` (f 0..1)
-- `/rig/drift` (f 0..1)
-- `/rig/space` (f 0..1)
-- `/rig/color` (f 0..1)
-- `/rig/vis_trim` (f 0..1)
-- `/rig/vis_density_trim` (f 0..1)
-- `/rig/global_trim` (f 0..1)
-
-(Still supported for multi-arg senders:)
-- `/rig/param` (s, f|i|s)
-
-### Morph space (SHIFT bank)
+### Morph space
 - `/rig/morph/setA` (no args)
 - `/rig/morph/setB` (no args)
 - `/rig/morph/swap` (no args)
 - `/rig/morph/commit` (no args)
 - `/rig/morph/t` (f 0..1)
-Optional direct set:
-- `/rig/morph/a/<scene>` (no args)
-- `/rig/morph/b/<scene>` (no args)
 
-### Safety
-- `/rig/panic` (no args or int) : if nonzero (or message received), load `panic`
+### Fracture (Law 3)
+- `/rig/fracture/enable` (int or no-arg toggle)
+- `/rig/fracture/amount` (f 0..1)
+- `/rig/fracture/w_audio` (f 0..1)
+- `/rig/fracture/w_visual` (f 0..1)
+- `/rig/fracture/w_processing` (f 0..1)
+- `/rig/fracture/balance` (f 0..1)
+
+---
 
 ## Outputs (from the bridge)
-- `/rig/scene` (s) : current scene (or morph state label)
-- `/rig/energy` (f) : smoothed energy
-- `/rig/health/connected` (s, i) : per-destination status (best-effort)
 
-Suggested extensions (later):
-- `/rig/telemetry/rms` (f)
-- `/rig/telemetry/onset` (i)
-- `/rig/clock/bpm` (f)
+Scenes / status:
+- `/rig/scene` (s)
+- `/rig/health/connected` (s, i)
+
+Morph telemetry:
+- `/rig/morph/a` (s)
+- `/rig/morph/b` (s)
+- `/rig/morph/t_target` (f)
+- `/rig/morph/t_raw` (f)
+- `/rig/morph/t_applied` (f)
+- `/rig/morph/snapped` (i)
+- `/rig/morph/snap_point` (f)
+
+Fracture telemetry:
+- `/rig/fracture/enabled` (i)
+- `/rig/fracture/amount` (f)
+- `/rig/fracture/env` (f)
+- `/rig/fracture/w_audio` (f)
+- `/rig/fracture/w_visual` (f)
+- `/rig/fracture/w_processing` (f)
