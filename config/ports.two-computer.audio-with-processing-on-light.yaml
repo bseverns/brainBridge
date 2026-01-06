@@ -1,0 +1,26 @@
+# Audio Brain config (Computer A), Processing listener is on Light Brain (Computer B)
+listen:
+  host: "0.0.0.0"
+  port: 9000
+
+destinations:
+  touchdesigner:
+    enabled: true
+    host: "lightbrain.local"   # <-- change
+    port: 9001
+
+  samplebrain:
+    enabled: true
+    host: "127.0.0.1"
+    port: 9002
+
+  processing:
+    enabled: true
+    host: "lightbrain.local"   # <-- change
+    port: 9003
+
+slew_units_per_sec:
+  energy: 2.5
+  chaos:  1.5
+
+rate_limit_hz: 120

@@ -1,0 +1,14 @@
+name: panic
+notes: "Safe state. Low energy; chaos near zero."
+
+touchdesigner:
+  "/rig/scene": "panic"
+  "/rig/energy": 0.05
+  "/rig/palette": 0
+
+samplebrain:
+  energy: 0.05
+  chaos:  0.00
+
+processing:
+  "/rig/mode": 0

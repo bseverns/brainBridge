@@ -1,0 +1,29 @@
+listen:
+  host: "0.0.0.0"
+  port: 9000
+
+destinations:
+  touchdesigner:
+    enabled: true
+    host: "127.0.0.1"
+    port: 9001
+  samplebrain:
+    enabled: true
+    host: "127.0.0.1"
+    port: 9002
+  processing:
+    enabled: false
+    host: "127.0.0.1"
+    port: 9003
+
+slew_units_per_sec:
+  energy:   2.5
+  density:  3.0
+  grain:    2.0
+  tightness:2.0
+  chaos:    1.5
+  drift:    1.2
+  space:    2.0
+  color:    6.0
+
+rate_limit_hz: 120

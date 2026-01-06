@@ -1,0 +1,14 @@
+name: steel
+notes: "Hard shine. Higher energy, tighter motion."
+
+touchdesigner:
+  "/rig/scene": "steel"
+  "/rig/energy": 0.70
+  "/rig/palette": 3
+
+samplebrain:
+  energy: 0.70
+  chaos:  0.35
+
+processing:
+  "/rig/mode": 2

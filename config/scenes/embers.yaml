@@ -1,0 +1,14 @@
+name: embers
+notes: "Quiet heat. Low energy, slow drift."
+
+touchdesigner:
+  "/rig/scene": "embers"
+  "/rig/energy": 0.20
+  "/rig/palette": 1
+
+samplebrain:
+  energy: 0.20
+  chaos:  0.10
+
+processing:
+  "/rig/mode": 1
