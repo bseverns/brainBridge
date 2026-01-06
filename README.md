@@ -26,6 +26,7 @@ python run_bridge.py --config config/ports.two-computer.audio.yaml
 - `docs/pcr-30-layout.md`
 - `docs/realearn-morph-bank.md`
 - `docs/performance-laws.md`
+- `docs/scenes.md`
 - `docs/osc-address-space.md`
 
 ## TouchDesigner MIDI→OSC (single machine)
@@ -33,4 +34,3 @@ If you’re using TouchDesigner as the controller mapper (PCR-30 → OSC), start
 - `touchdesigner/README.md`
 
 A ready mapping for **S7/S8/B1 → Fracture** is documented in `docs/pcr-30-td-fracture-map.md`.
-
