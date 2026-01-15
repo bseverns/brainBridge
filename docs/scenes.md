@@ -1,54 +1,48 @@
 # Scene Schema (sbrig/scenes.py)
 
-This doc is the **scene contract** used by `sbrig/scenes.py`. It’s a small, readable YAML format that keeps a rig *playable* under pressure: half studio notebook, half teaching guide.
+This doc describes the scene file format used by `sbrig/scenes.py` and applied by
+`sbrig/bridge.py`. Scenes are YAML files named `<scene>.yaml` and loaded by name.
 
-Scene files live in a directory (whatever you pass into `load_scene(scene_dir, name)`), and each file is named `<scene>.yaml`. Example: `scenes/forest-pulse.yaml`.
+Sample scenes live in:
+- `config/scenes/embers.yaml`
+- `config/scenes/steel.yaml`
+- `config/scenes/panic.yaml`
 
-## Top-level keys (required vs optional)
+## File location and naming
 
-`load_scene()` reads a YAML dict and turns it into a `Scene` dataclass. These keys are expected:
+`load_scene(scene_dir, name)` reads `{scene_dir}/{name}.yaml`. The scene name defaults
+to the filename if you omit `name:` in the file.
 
-| Key | Required? | Type | Notes |
+## Top-level keys
+
+All keys are optional; missing maps default to `{}`.
+
+| Key | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `name` | Optional | string | Defaults to filename (`name` passed into `load_scene`). Always stored as a string. |
-| `notes` | Optional | string | Freeform text. Use it to explain vibe, cues, or what *not* to touch. |
-| `touchdesigner` | Optional | map/dict | Defaults to `{}`. Key/value controls for TouchDesigner. |
-| `samplebrain` | Optional | map/dict | Defaults to `{}`. Key/value controls for Samplebrain. |
-| `processing` | Optional | map/dict | Defaults to `{}`. Key/value controls for Processing. |
+| `name` | string | filename | Stored as a string. |
+| `notes` | string | null | Freeform stage notes. |
+| `touchdesigner` | map | `{}` | OSC address to value; forwarded directly. |
+| `samplebrain` | map | `{}` | Macro/param names; mapped via `bindings/samplebrain.yaml`. |
+| `processing` | map | `{}` | OSC address to value; forwarded directly. |
 
-**The minimum valid scene** is an empty YAML file (`{}`) or a file with just `name:`. Everything else is optional.
+Minimum valid scene: `{}` or a file with only `name:`.
 
-## Example scene file
+## Destination behavior
 
-```yaml
-name: "forest-pulse"
-notes: "Slow inhale → big trunk pulses. Keep this wide and patient."
-
-touchdesigner:
-  blur: 0.15
-  trail_amount: 0.8
-  palette: "green"
-
-samplebrain:
-  energy: 0.2
-  grain: 0.65
-  texture: "mossy"  # non-numeric, so it *snaps* during morphs
-
-processing:
-  swirl: 0.4
-  particles: 1200
-  mode: "lofi"
-```
+- `touchdesigner` and `processing` are sent as-is: keys are OSC addresses, values are
+  the argument payload. Example: `"/rig/energy": 0.7`.
+- `samplebrain` keys are looked up in `bindings/samplebrain.yaml`.
+  - If the key matches a `macros` or `params` entry, the bridge sends the mapped
+    address and type to Samplebrain.
+  - If the key is not bound, it is treated as a generic rig param and sent as
+    `/rig/param/<key>`.
 
 ## Morphing rules (numeric vs non-numeric)
 
-When you morph between scenes (`morph_scenes(a, b, t)`), the bridge **interpolates numbers** and **snaps everything else**. That’s the whole rule. Simple. Musical.
+`morph_scenes(a, b, t)` interpolates numbers and snaps everything else.
 
-- **Numeric values** (`int` or `float`) are linearly interpolated.
-- **Non-numeric values** (strings, arrays, dicts, booleans, `null`) **snap**:
-  - if `t < 0.5`, you get scene A’s value
-  - if `t >= 0.5`, you get scene B’s value
-- **Booleans** are explicitly **not** treated as numbers. (`True`/`False` are *not* interpolated.)
+- Numeric values: `int` or `float` (but not `bool`) are linearly interpolated.
+- Non-numeric values: strings, lists, dicts, booleans, `null` snap at `t = 0.5`.
 
 ### Numeric morph example
 
@@ -61,9 +55,9 @@ samplebrain:
 samplebrain:
   energy: 0.8
 
-# t = 0.25 → 0.35
-# t = 0.50 → 0.50
-# t = 0.75 → 0.65
+# t = 0.25 -> 0.35
+# t = 0.50 -> 0.50
+# t = 0.75 -> 0.65
 ```
 
 ### Non-numeric snap example
@@ -71,58 +65,31 @@ samplebrain:
 ```yaml
 # Scene A
 processing:
-  mode: "lofi"
+  /rig/mode: "lofi"
 
 # Scene B
 processing:
-  mode: "hires"
+  /rig/mode: "hires"
 
-# t = 0.49 → "lofi"
-# t = 0.50 → "hires"
+# t = 0.49 -> "lofi"
+# t = 0.50 -> "hires"
 ```
 
-If you need a parameter to *glide*, make it numeric. If you want it to *jump*, make it non-numeric. That’s the punk-rock contract.
-
-## How `samplebrain` keys map to Samplebrain bindings
-
-The keys inside `samplebrain` should match the **macro names** in `bindings/samplebrain.yaml`.
-
-In `bindings/samplebrain.yaml`, the top-level `macros` section lists known macro names (e.g. `energy`, `density`, `grain`, etc.) and the OSC address/type each macro should send to.
+## Example scene (real file shape)
 
 ```yaml
-macros:
-  energy: { address: null, type: "f" }
-  density: { address: null, type: "f" }
-  grain: { address: null, type: "f" }
-  # ...
-```
+name: embers
+notes: "Quiet heat. Low energy, slow drift."
 
-### Mapping rule of thumb
+touchdesigner:
+  /rig/scene: "embers"
+  /rig/energy: 0.20
+  /rig/palette: 1
 
-- **Scene key → Samplebrain macro of the same name**.
-- If the macro is unbound (`address: null`), the bridge can still run, but Samplebrain won’t receive updates until you wire it.
-
-### Example mapping
-
-```yaml
-# scene
 samplebrain:
-  energy: 0.45
-  grain: 0.9
+  energy: 0.20
+  chaos: 0.10
+
+processing:
+  /rig/mode: 1
 ```
-
-```yaml
-# bindings/samplebrain.yaml
-macros:
-  energy: { address: "/samplebrain/energy", type: "f" }
-  grain: { address: "/samplebrain/grain", type: "f" }
-```
-
-That’s it: name matches name. No magic, no hidden registry, just human-readable intent.
-
-## TL;DR
-
-- **`name`, `notes` are optional**.
-- `touchdesigner`, `samplebrain`, `processing` are **optional dicts**.
-- **Numbers glide. Everything else snaps.**
-- **`samplebrain` keys should match `bindings/samplebrain.yaml` macros**.
