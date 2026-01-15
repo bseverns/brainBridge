@@ -83,3 +83,96 @@ If you don’t see telemetry:
 - Fracture amount: 0.15–0.35 is usually plenty
 - Balance: treat it like “mix” between sound-tear and image-tear
 - Button: toggle fracture on/off so you can “arm” the behavior between sections
+
+---
+
+## Patch Blueprint (concrete node plan)
+Goal: one small network that handles **control**, **telemetry**, and **scene cues**.
+
+### 1) MIDI -> OSC (controls)
+Create these CHOPs in order (names suggested):
+1. `midi_in` (MIDI In CHOP)
+   - Device: PCR-30
+2. `select_pcr` (Select CHOP)
+   - Channels: the three you confirmed for S7, S8, B1
+3. `math_scale` (Math CHOP)
+   - From Range: 0..127
+   - To Range: 0..1
+4. `lag_smooth` (Lag CHOP)
+   - Lag: 0.02..0.06
+5. `logic_toggle` (Logic CHOP) **for B1 only**
+   - Convert Input: On/Off
+   - Combine Channels: By Channel
+   - Toggle: On
+6. `rename_osc` (Rename CHOP)
+   - Rename to:
+     - `/rig/fracture/amount`
+     - `/rig/fracture/balance`
+     - `/rig/fracture/enable`
+7. `osc_out` (OSC Out CHOP)
+   - Network Address: `127.0.0.1`
+   - Port: `9000`
+
+Tip: If you want more macros, add channels in `select_pcr`, map to `/rig/energy`,
+`/rig/density`, etc., and keep the rest of the chain the same.
+
+### 2) Telemetry (bridge -> TD)
+Add these CHOPs:
+1. `osc_in` (OSC In CHOP)
+   - Port: `9001`
+2. `select_telemetry` (Select CHOP)
+   - Channels to keep:
+     - `/rig/health/connected`
+     - `/rig/morph/t_applied`
+     - `/rig/morph/snapped`
+     - `/rig/fracture/env`
+     - `/rig/fracture/enabled`
+
+Drive simple UI widgets (Value Ladder / LED / Slider) from `select_telemetry`
+so you can see the bridge state at a glance.
+
+### 3) Scene + morph controls (OSC Out DAT)
+Use a single OSC Out DAT for discrete messages:
+1. `osc_out_dat` (OSC Out DAT)
+   - Network Address: `127.0.0.1`
+   - Port: `9000`
+2. Add Buttons with these messages:
+   - `/rig/morph/setA`
+   - `/rig/morph/setB`
+   - `/rig/morph/swap`
+   - `/rig/morph/commit`
+3. Add a Text Field + Button for scene cues:
+   - Message: `/rig/cue`
+   - Argument: scene name (e.g. `embers`, `steel`, `panic`)
+
+### 4) Optional safety gate
+Add a single `arm` Toggle that multiplies/gates outgoing CHOP values:
+1. `arm` (Constant CHOP, value 0 or 1)
+2. `gate` (Math CHOP) after `lag_smooth`
+   - Combine: Multiply with `arm`
+This lets you rehearse without sending OSC.
+
+---
+
+## Macro Mapping Table (suggested)
+Use this to expand `select_pcr` and `rename_osc` beyond S7/S8/B1.
+These are **0..1 floats** unless noted.
+
+| Control | OSC Address | Notes |
+| --- | --- | --- |
+| S1 | `/rig/energy` | Overall drive |
+| S2 | `/rig/density` | Event density |
+| S3 | `/rig/grain` | Grain size / granularity |
+| S4 | `/rig/tightness` | Rhythmic lock |
+| S5 | `/rig/chaos` | Controlled disorder |
+| S6 | `/rig/drift` | Slow motion / sway |
+| S7 | `/rig/fracture/amount` | Fracture depth |
+| S8 | `/rig/fracture/balance` | 0 = audio, 1 = visual |
+| K1 | `/rig/space` | Spatial spread |
+| K2 | `/rig/color` | Visual hue / tint |
+| K3 | `/rig/vis_trim` | Visual gain trim |
+| K4 | `/rig/vis_density_trim` | Visual density trim |
+| K5 | `/rig/global_trim` | Global trim |
+| B1 | `/rig/fracture/enable` | Toggle (0/1) |
+
+If your PCR-30 control names differ, just rename channels to match the addresses.
