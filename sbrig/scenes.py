@@ -52,3 +52,57 @@ def morph_scenes(a: Scene, b: Scene, t: float) -> Scene:
         samplebrain=morph_dict(a.samplebrain, b.samplebrain),
         processing=morph_dict(a.processing, b.processing),
     )
+
+
+class SceneValidationError(Exception):
+    """Raised when a scene fails validation."""
+    pass
+
+
+def validate_scene(scene: Scene) -> list[str]:
+    """Validate a scene and return a list of warning messages.
+    
+    Args:
+        scene: Scene to validate
+        
+    Returns:
+        List of warning strings (empty if valid)
+        
+    Raises:
+        SceneValidationError: If scene has critical errors
+    """
+    warnings: list[str] = []
+    
+    # Check name
+    if not scene.name or not scene.name.strip():
+        raise SceneValidationError("Scene must have a name")
+    
+    # Check destination dicts are actually dicts
+    for dest_name, dest_dict in [
+        ("touchdesigner", scene.touchdesigner),
+        ("samplebrain", scene.samplebrain),
+        ("processing", scene.processing),
+    ]:
+        if not isinstance(dest_dict, dict):
+            raise SceneValidationError(
+                f"{dest_name} must be a dictionary, got {type(dest_dict).__name__}"
+            )
+    
+    # Warn about OSC addresses without leading slash
+    for addr in scene.touchdesigner.keys():
+        if isinstance(addr, str) and not addr.startswith("/"):
+            warnings.append(f"TouchDesigner address '{addr}' should start with '/'")
+    
+    for addr in scene.processing.keys():
+        if isinstance(addr, str) and not addr.startswith("/"):
+            warnings.append(f"Processing address '{addr}' should start with '/'")
+    
+    # Warn about values outside 0-1 range for common macros
+    common_macros = {"energy", "density", "grain", "tightness", "chaos", "drift", "space", "color"}
+    for key, val in scene.samplebrain.items():
+        if key in common_macros and _is_number(val):
+            if not (0.0 <= float(val) <= 1.0):
+                warnings.append(f"Macro '{key}' has value {val}, expected 0.0-1.0")
+    
+    return warnings
+
